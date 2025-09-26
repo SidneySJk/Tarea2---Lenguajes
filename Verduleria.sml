@@ -1,10 +1,9 @@
 (*
  - sml "C:\TEC CODIGO\Tarea2\print.sml"
- - use "C:\\TEC CODIGO\\Tarea2\\print.sml";
+ - use "C:\\TEC CODIGO\\Tarea2\\Verduleria.sml";
 *)
 
 (*Creador*)
-
 
 fun validInt (s : string): bool = Option.isSome(Int.fromString s)
 fun validReal (s : string): bool = Option.isSome(Real.fromString s)
@@ -50,31 +49,60 @@ fun concatenarEntrada (cadena : string) (ciclo : int) =
         resultado
     end
 
-fun guardarEntxt linea = (*https://stackoverflow.com/questions/66257455/how-to-read-a-file-in-sml-line-by-line*)
+
+fun guardarEntxt linea = 
+    let
+        val archi = TextIO.openAppend "Catalogo.csv"
+        val _ = TextIO.output (archi, linea ^ "\r\n") 
+        val mensaje = print("La informacion ha sido guardada con exito\n")
+    in 
+        TextIO.closeOut
+    end
+
+
+fun limpiarRegistro () =
+    let 
+        val archi = TextIO.openOut "Catalogo.csv"
+        val limpiar = TextIO.closeOut archi
+    in 
+        ()
+    end
+
+
+
+fun identificarCodigo codigo =
     let
         val archi = TextIO.openIn "Catalogo.csv"
         val done = ref false
-    in 
-        while not (!done) do
+        val lista : string list ref = ref []
+        val _ = while (not (!done)) do (
             case TextIO.inputLine archi of
-                NONE =>
+                SOME s => 
                     let 
-                        TextIO.output (archi, linea) 
-                    in 
-                        done := true
+                        val e = String.tokens (fn c => c = #",") s
+                    in
+                        if hd e = codigo then lista := e @ !lista
+                        else
+                            ()
                     end
-                | SOME s => TextIO.output (archi, s)
-        
+
+                | NONE => done := true
+        )
+        val _ = TextIO.closeIn archi
+    in 
+        rev(!lista)
     end
 
-fun main i =
+
+
+fun main() =
     let 
         val output = concatenarEntrada "" 0
-        val mostrar = guardarEntxt output
     in
-        mostrar
+        guardarEntxt output
          (*then print("La informacion a sido guardada en el catalogo\n") else print("Hubo un error en el flujo\n");*)
     end
 
+val ini = main();
 
-val ini = main 0;
+
