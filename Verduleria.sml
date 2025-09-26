@@ -76,4 +76,5 @@ fun main i =
          (*then print("La informacion a sido guardada en el catalogo\n") else print("Hubo un error en el flujo\n");*)
     end
 
+
 val ini = main 0;
