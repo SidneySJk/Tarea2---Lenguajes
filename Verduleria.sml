@@ -64,8 +64,9 @@ fun limpiarRegistro () =
     let 
         val archi = TextIO.openOut "Catalogo.csv"
         val limpiar = TextIO.closeOut archi
+        val _ = print("El registro fue limpiado con exito\n")
     in 
-        ()
+        main()
     end
 
 
@@ -93,15 +94,37 @@ fun identificarCodigo codigo =
         rev(!lista)
     end
 
-
-
-fun main() =
+fun redireccionarRegistro() = 
     let 
         val output = concatenarEntrada "" 0
     in
         guardarEntxt output
-         (*then print("La informacion a sido guardada en el catalogo\n") else print("Hubo un error en el flujo\n");*)
+        
     end
+
+fun opcionesCreador n = 
+    case n of
+        "1" => let val _ = redireccionarRegistro() in () end
+        |"2" => let val _ = limpiarRegistro () in () end
+        |_ => let val _ = main() in () end 
+    
+
+fun main() =
+    let 
+        val _ = print("Alguna de las siguientes opciones: \n")
+        val _ = print("1) Agregar producto al catalogo \n")
+        val _ = print("2) Limpiar el catalogo \n")
+        val _ = print("Opcion:\n")
+        val opc = TextIO.inputLine TextIO.stdIn;
+        val pasarString = case opc of
+                            SOME s => String.substring(s, 0, String.size s - 1)
+                            | NONE => ""
+        val _ = opcionesCreador pasarString
+    in
+        ()
+    end
+
+
 
 val ini = main();
 
